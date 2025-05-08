@@ -5,10 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Quiz</title>
     <style>
+        :root {
+            --primary: #bb86fc;
+            --primary-dark: #3700b3;
+            --secondary: #03dac6;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --error: #cf6679;
+            --on-background: #e0e0e0;
+            --on-surface: #ffffff;
+        }
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--on-background);
             margin: 0;
             padding: 20px;
             display: flex;
@@ -16,28 +27,35 @@
             align-items: center;
             min-height: 100vh;
         }
+        
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
+        
         h1 {
             text-align: center;
-            color: #bb86fc;
-            margin-bottom: 20px;
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
+        
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            margin-bottom: 20px;
-            border-radius: 8px;
+            margin-bottom: 30px;
+            border-radius: 12px;
             background-color: #000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
+        
         .video-container iframe {
             position: absolute;
             top: 0;
@@ -46,78 +64,162 @@
             height: 100%;
             border: none;
         }
+        
         .buttons-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
         }
+        
         .tag-button {
-            padding: 10px;
-            background-color: #333;
+            padding: 12px 8px;
+            background-color: #2a2a2a;
             border: none;
-            border-radius: 5px;
-            color: white;
+            border-radius: 6px;
+            color: var(--on-surface);
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            text-align: center;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
+        
         .tag-button:hover {
-            background-color: #444;
+            background-color: #383838;
+            transform: translateY(-2px);
         }
+        
         .tag-button.selected {
-            background-color: #bb86fc;
+            background-color: var(--primary);
             color: #000;
+            box-shadow: 0 4px 8px rgba(187, 134, 252, 0.3);
         }
+        
         .tag-button.correct {
-            background-color: #4caf50;
+            background-color: #2e7d32;
             color: white;
         }
+        
         .tag-button.incorrect {
-            background-color: #f44336;
+            background-color: var(--error);
             color: white;
         }
+        
         .control-buttons {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 25px;
         }
+        
         .control-button {
-            padding: 10px 20px;
-            background-color: #3700b3;
+            padding: 12px 24px;
+            background-color: var(--primary-dark);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
+        
         .control-button:hover {
-            background-color: #6200ee;
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
         }
+        
         .control-button:disabled {
             background-color: #333;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
-        .stats {
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            background-color: #252525;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-box {
             text-align: center;
-            margin-top: 20px;
-            color: #bb86fc;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #a0a0a0;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .correct-stat {
+            color: var(--secondary);
+        }
+        
+        .incorrect-stat {
+            color: var(--error);
+        }
+        
+        .shown-stat {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .buttons-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>YouTube Video Quiz</h1>
-        <div class="stats" id="stats">
-            Videos angezeigt: 0 | Richtige Antworten: 0
+        
+        <div class="stats-container">
+            <div class="stat-box shown-stat">
+                <div class="stat-label">Gezeigt</div>
+                <div class="stat-value" id="shown-count">0</div>
+            </div>
+            <div class="stat-box correct-stat">
+                <div class="stat-label">Richtig</div>
+                <div class="stat-value" id="correct-count">0</div>
+            </div>
+            <div class="stat-box incorrect-stat">
+                <div class="stat-label">Falsch</div>
+                <div class="stat-value" id="incorrect-count">0</div>
+            </div>
         </div>
+        
         <div class="video-container" id="video-container">
             <!-- YouTube video will be embedded here -->
         </div>
+        
         <div class="buttons-grid" id="buttons-grid">
             <!-- Tag buttons will be generated here -->
         </div>
+        
         <div class="control-buttons">
             <button id="check-button" class="control-button" disabled>Überprüfen</button>
             <button id="next-button" class="control-button">Nächstes Video</button>
@@ -129,7 +231,9 @@
         const videoData = [
             { url: "https://www.youtube.com/embed/ymRYfjPiZhE", tag: "LT1" },
             { url: "https://www.youtube.com/embed/aNqJniRzQ_o", tag: "LT2" },
-            { url: "https://www.youtube.com/embed/b7Jl0CHjXVQ", tag: "LT3" }
+            { url: "https://www.youtube.com/embed/b7Jl0CHjXVQ", tag: "LT3" },
+            // Füge hier weitere Videos hinzu im Format:
+            // { url: "YOUTUBE_EMBED_URL", tag: "TAG" },
         ];
 
         // Convert watch URLs to embed URLs
@@ -139,19 +243,28 @@
             }
         });
 
+        // All possible tags
+        const allTags = [];
+        for (let i = 1; i <= 5; i++) {
+            allTags.push(`HT${i}`, `LT${i}`);
+        }
+
         let currentVideoIndex;
         let selectedTag = null;
         let usedIndices = [];
         let stats = {
             shown: 0,
-            correct: 0
+            correct: 0,
+            incorrect: 0
         };
 
         const videoContainer = document.getElementById('video-container');
         const buttonsGrid = document.getElementById('buttons-grid');
         const checkButton = document.getElementById('check-button');
         const nextButton = document.getElementById('next-button');
-        const statsElement = document.getElementById('stats');
+        const shownCountElement = document.getElementById('shown-count');
+        const correctCountElement = document.getElementById('correct-count');
+        const incorrectCountElement = document.getElementById('incorrect-count');
 
         // Initialize the app
         function init() {
@@ -164,12 +277,9 @@
             updateStats();
         }
 
-        // Create tag buttons based on available tags in videoData
+        // Create all tag buttons (HT1-5, LT1-5)
         function createTagButtons() {
             buttonsGrid.innerHTML = '';
-            
-            // Get all unique tags from videoData
-            const allTags = [...new Set(videoData.map(video => video.tag))];
             
             allTags.forEach(tag => {
                 const button = document.createElement('button');
@@ -214,6 +324,8 @@
             
             if (selectedTag === correctTag) {
                 stats.correct++;
+            } else {
+                stats.incorrect++;
             }
             
             checkButton.disabled = true;
@@ -258,7 +370,9 @@
 
         // Update statistics display
         function updateStats() {
-            statsElement.textContent = `Videos angezeigt: ${stats.shown} | Richtige Antworten: ${stats.correct}`;
+            shownCountElement.textContent = stats.shown;
+            correctCountElement.textContent = stats.correct;
+            incorrectCountElement.textContent = stats.incorrect;
         }
 
         // Start the application
