@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Quiz</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #bb86fc;
+            margin-bottom: 20px;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #000;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tag-button {
+            padding: 10px;
+            background-color: #333;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        .tag-button:hover {
+            background-color: #444;
+        }
+        .tag-button.selected {
+            background-color: #bb86fc;
+            color: #000;
+        }
+        .tag-button.correct {
+            background-color: #4caf50;
+            color: white;
+        }
+        .tag-button.incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .control-button {
+            padding: 10px 20px;
+            background-color: #3700b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .control-button:hover {
+            background-color: #6200ee;
+        }
+        .control-button:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+        }
+        .stats {
+            text-align: center;
+            margin-top: 20px;
+            color: #bb86fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Video Quiz</h1>
+        <div class="stats" id="stats">
+            Videos angezeigt: 0 | Richtige Antworten: 0
+        </div>
+        <div class="video-container" id="video-container">
+            <!-- YouTube video will be embedded here -->
+        </div>
+        <div class="buttons-grid" id="buttons-grid">
+            <!-- Tag buttons will be generated here -->
+        </div>
+        <div class="control-buttons">
+            <button id="check-button" class="control-button" disabled>Überprüfen</button>
+            <button id="next-button" class="control-button">Nächstes Video</button>
+        </div>
+    </div>
+
+    <script>
+        // Video data with your provided links
+        const videoData = [
+            { url: "https://www.youtube.com/embed/ymRYfjPiZhE", tag: "LT1" },
+            { url: "https://www.youtube.com/embed/aNqJniRzQ_o", tag: "LT2" },
+            { url: "https://www.youtube.com/embed/b7Jl0CHjXVQ", tag: "LT3" }
+        ];
+
+        // Convert watch URLs to embed URLs
+        videoData.forEach(video => {
+            if (video.url.includes("watch?v=")) {
+                video.url = video.url.replace("watch?v=", "embed/");
+            }
+        });
+
+        let currentVideoIndex;
+        let selectedTag = null;
+        let usedIndices = [];
+        let stats = {
+            shown: 0,
+            correct: 0
+        };
+
+        const videoContainer = document.getElementById('video-container');
+        const buttonsGrid = document.getElementById('buttons-grid');
+        const checkButton = document.getElementById('check-button');
+        const nextButton = document.getElementById('next-button');
+        const statsElement = document.getElementById('stats');
+
+        // Initialize the app
+        function init() {
+            createTagButtons();
+            loadRandomVideo();
+            
+            checkButton.addEventListener('click', checkAnswer);
+            nextButton.addEventListener('click', loadRandomVideo);
+            
+            updateStats();
+        }
+
+        // Create tag buttons based on available tags in videoData
+        function createTagButtons() {
+            buttonsGrid.innerHTML = '';
+            
+            // Get all unique tags from videoData
+            const allTags = [...new Set(videoData.map(video => video.tag))];
+            
+            allTags.forEach(tag => {
+                const button = document.createElement('button');
+                button.className = 'tag-button';
+                button.textContent = tag;
+                button.dataset.tag = tag;
+                button.addEventListener('click', () => selectTag(tag));
+                buttonsGrid.appendChild(button);
+            });
+        }
+
+        // Select a tag
+        function selectTag(tag) {
+            // Reset all buttons
+            document.querySelectorAll('.tag-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Select the clicked button
+            const selectedButton = document.querySelector(`.tag-button[data-tag="${tag}"]`);
+            selectedButton.classList.add('selected');
+            
+            selectedTag = tag;
+            checkButton.disabled = false;
+        }
+
+        // Check the selected answer
+        function checkAnswer() {
+            if (selectedTag === null) return;
+            
+            const correctTag = videoData[currentVideoIndex].tag;
+            const allButtons = document.querySelectorAll('.tag-button');
+            
+            allButtons.forEach(button => {
+                button.disabled = true;
+                if (button.dataset.tag === correctTag) {
+                    button.classList.add('correct');
+                } else if (button.dataset.tag === selectedTag && selectedTag !== correctTag) {
+                    button.classList.add('incorrect');
+                }
+            });
+            
+            if (selectedTag === correctTag) {
+                stats.correct++;
+            }
+            
+            checkButton.disabled = true;
+            nextButton.disabled = false;
+            updateStats();
+        }
+
+        // Load a random video that hasn't been shown yet
+        function loadRandomVideo() {
+            // Reset selection
+            selectedTag = null;
+            checkButton.disabled = true;
+            nextButton.disabled = true;
+            
+            // Reset buttons
+            document.querySelectorAll('.tag-button').forEach(button => {
+                button.classList.remove('selected', 'correct', 'incorrect');
+                button.disabled = false;
+            });
+            
+            // If all videos have been shown, reset the used indices
+            if (usedIndices.length === videoData.length) {
+                usedIndices = [];
+            }
+            
+            // Find a random index that hasn't been used yet
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * videoData.length);
+            } while (usedIndices.includes(randomIndex));
+            
+            usedIndices.push(randomIndex);
+            currentVideoIndex = randomIndex;
+            
+            // Load the video
+            const video = videoData[currentVideoIndex];
+            videoContainer.innerHTML = `<iframe src="${video.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            
+            stats.shown++;
+            updateStats();
+        }
+
+        // Update statistics display
+        function updateStats() {
+            statsElement.textContent = `Videos angezeigt: ${stats.shown} | Richtige Antworten: ${stats.correct}`;
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
