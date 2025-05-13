@@ -245,16 +245,10 @@
             { url: "https://www.youtube.com/embed/ymRYfjPiZhE", tag: "LT1" },
             { url: "https://www.youtube.com/embed/aNqJniRzQ_o", tag: "LT2" },
             { url: "https://www.youtube.com/embed/b7Jl0CHjXVQ", tag: "LT3" },
+            { url: "https://medal.tv/de/games/minecraft/clip/kfGjLha42qwYffoQM?invite=cr-MSxoYVAsNDAwMTY4MzI0", tag: "LT3" },
             // Füge hier weitere Videos hinzu im Format:
             // { url: "YOUTUBE_EMBED_URL", tag: "TAG" },
         ];
-
-        // Convert watch URLs to embed URLs
-        videoData.forEach(video => {
-            if (video.url.includes("watch?v=")) {
-                video.url = video.url.replace("watch?v=", "embed/");
-            }
-        });
 
         // All possible tags
         const allTags = [];
