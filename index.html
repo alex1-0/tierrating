@@ -245,8 +245,8 @@
             { url: "https://www.youtube.com/embed/DmED10d9qVo", type: "youtube", tag: "LT3" },
             { url: "https://www.youtube.com/embed/jJBN849ywZw", type: "youtube", tag: "LT3" },
             { url: "https://www.youtube.com/embed/W6gQNt0M2go", type: "youtube", tag: "HT5" },
-            { url: "kfJIyZDps76oQpk4B", type: "medal", tag: "LT4" }, // Nur die Clip-ID
-            { url: "kcSAgmjFZ5VTrb1yY", type: "medal", tag: "LT4" }, // Nur die Clip-ID
+            { url: "https://medal.tv/de/games/minecraft/clips/kj1NCqQ69GbYwG20a", type: "medal", tag: "LT4" }, // Nur die Clip-ID
+            { url: "https://medal.tv/de/games/minecraft/clips/kcSAgmjFZ5VTrb1yY", type: "medal", tag: "LT4" }, // Nur die Clip-ID
             { url: "1.mp4", type: "local", tag: "HT3" },
             { url: "2.mp4", type: "local", tag: "LT4" },
             { url: "3.mov", type: "local", tag: "LT3" },
@@ -397,7 +397,7 @@
             } else if (video.type === "medal") {
                 // Medal.tv Embed
                 const iframe = document.createElement('iframe');
-                iframe.src = `https://medal.tv/embed/${video.url}?autoplay=1&loop=0&muted=0`;
+                iframe.src = video.url;
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allowfullscreen', '');
                 iframe.setAttribute('referrerpolicy', 'no-referrer');
