@@ -247,6 +247,8 @@
             { url: "https://www.youtube.com/embed/DmED10d9qVo", type: "youtube", tag: "LT3" },
             { url: "https://www.youtube.com/embed/jJBN849ywZw", type: "youtube", tag: "LT3" },
             { url: "https://www.youtube.com/embed/W6gQNt0M2go", type: "youtube", tag: "HT5" },
+            { url: "https://medal.tv/games/minecraft/clips/kfJIyZDps76oQpk4B/d1337tVJXQ3E?invite=cr-MSxIY3MsMTg0MjE4OTMs", type: "medal", tag: "LT4" },
+            { url: "https://medal.tv/games/minecraft/clips/kcSAgmjFZ5VTrb1yY/d1337pHj1YqT?invite=cr-MSxwQ3MsMTg0MjE4OTMs", type: "medal", tag: "LT4" },
             { url: "1.mp4", type: "local", tag: "HT3" },
             { url: "2.mp4", type: "local", tag: "LT4" },
             { url: "3.mov", type: "local", tag: "LT3" },
@@ -325,8 +327,10 @@
             const correctTag = videoData[currentVideoIndex].tag;
             const allButtons = document.querySelectorAll('.tag-button');
             
+            // Markiere alle Buttons entsprechend
             allButtons.forEach(button => {
                 button.disabled = true;
+                
                 if (button.dataset.tag === correctTag) {
                     button.classList.add('correct');
                 } else if (button.dataset.tag === selectedTag && selectedTag !== correctTag) {
@@ -334,6 +338,7 @@
                 }
             });
             
+            // Statistik aktualisieren
             if (selectedTag === correctTag) {
                 stats.correct++;
             } else {
@@ -391,6 +396,13 @@
                 videoElement.controls = true;
                 videoElement.style.objectFit = 'contain';
                 videoContainer.appendChild(videoElement);
+            } else if (video.type === "medal") {
+                // Medal.tv Embed
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://medal.tv/embed/${video.url.split('/clips/')[1].split('?')[0]}?autoplay=1&loop=0&muted=0`;
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', '');
+                videoContainer.appendChild(iframe);
             }
             
             stats.shown++;
