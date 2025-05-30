@@ -23,7 +23,7 @@
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;f
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
@@ -56,6 +56,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         
+        .video-container video,
         .video-container iframe {
             position: absolute;
             top: 0;
@@ -226,11 +227,11 @@
         </div>
         
         <div class="video-container" id="video-container">
-            <!-- YouTube video will be embedded here -->
+            <!-- Video wird hier eingebettet -->
         </div>
         
         <div class="buttons-grid" id="buttons-grid">
-            <!-- Tag buttons will be generated here -->
+            <!-- Tag-Buttons werden hier generiert -->
         </div>
         
         <div class="control-buttons">
@@ -240,29 +241,21 @@
     </div>
 
     <script>
-        // Video data with your provided links
+        // Video-Daten mit verschiedenen Quellen
         const videoData = [
-            { url: "https://www.youtube.com/watch?v=ZG_1sFR67jI", tag: "HT5" },
-            { url: "https://youtu.be/DmED10d9qVo", tag: "LT3" },
-            { url: "https://www.youtube.com/watch?v=jJBN849ywZw", tag: "LT3" },
-            { url: "https://youtu.be/W6gQNt0M2go", tag: "HT5" },
-            { url: "https://medal.tv/de/games/minecraft/clips/kfJIyZDps76oQpk4B", tag: "LT4" },
-            { url: "https://medal.tv/de/games/minecraft/clips/kcSAgmjFZ5VTrb1yY", tag: "LT4" },
-            { url: "https://youtu.be/HJpVpCjcSiQ?feature=shared", tag: "LT4" },
-            { url: "https://medal.tv/de/games/minecraft/clips/k5iVlAGiq_uGlLLv_", tag: "HT4" },
-            { url: "https://medal.tv/games/minecraft/clips/kj1NCqQ69GbYwG20a", tag: "LT5" },
-            { url: "https://www.youtube.com/watch?v=fHH_ETWc24E", tag: "LT3" },
-            { url: "https://www.youtube.com/watch?v=GrJIVMNyg4Y", tag: "LT3" },
-            { url: "https://medal.tv/games/minecraft/clips/ko72AJoeX7lZAAupt", tag: "HT4" },
-            { url: "1.mp4", tag: "HT3" },
-            { url: "2.mp4", tag: "LT4" },
-            { url: "3.mov", tag: "LT3" },
-            { url: "4.mov", tag: "LT3" },
-            // Füge hier weitere Videos hinzu im Format:
-            // { url: "YOUTUBE_EMBED_URL", tag: "TAG" },
+            { url: "https://www.youtube.com/embed/ZG_1sFR67jI", type: "youtube", tag: "HT5" },
+            { url: "https://www.youtube.com/embed/DmED10d9qVo", type: "youtube", tag: "LT3" },
+            { url: "https://www.youtube.com/embed/jJBN849ywZw", type: "youtube", tag: "LT3" },
+            { url: "https://www.youtube.com/embed/W6gQNt0M2go", type: "youtube", tag: "HT5" },
+            { url: "1.mp4", type: "local", tag: "HT3" },
+            { url: "2.mp4", type: "local", tag: "LT4" },
+            { url: "3.mov", type: "local", tag: "LT3" },
+            { url: "4.mov", type: "local", tag: "LT3" },
+            // Weitere Videos hinzufügen im Format:
+            // { url: "URL", type: "youtube|local|medal", tag: "TAG" },
         ];
 
-        // All possible tags
+        // Alle möglichen Tags
         const allTags = [];
         for (let i = 1; i <= 5; i++) {
             allTags.push(`HT${i}`, `LT${i}`);
@@ -285,7 +278,7 @@
         const correctCountElement = document.getElementById('correct-count');
         const incorrectCountElement = document.getElementById('incorrect-count');
 
-        // Initialize the app
+        // Initialisiert die App
         function init() {
             createTagButtons();
             loadRandomVideo();
@@ -296,7 +289,7 @@
             updateStats();
         }
 
-        // Create all tag buttons (HT1-5, LT1-5)
+        // Erstellt alle Tag-Buttons (HT1-5, LT1-5)
         function createTagButtons() {
             buttonsGrid.innerHTML = '';
             
@@ -310,14 +303,14 @@
             });
         }
 
-        // Select a tag
+        // Wählt einen Tag aus
         function selectTag(tag) {
-            // Reset all buttons
+            // Setzt alle Buttons zurück
             document.querySelectorAll('.tag-button').forEach(btn => {
                 btn.classList.remove('selected');
             });
             
-            // Select the clicked button
+            // Selektiert den geklickten Button
             const selectedButton = document.querySelector(`.tag-button[data-tag="${tag}"]`);
             selectedButton.classList.add('selected');
             
@@ -325,7 +318,7 @@
             checkButton.disabled = false;
         }
 
-        // Check the selected answer
+        // Überprüft die ausgewählte Antwort
         function checkAnswer() {
             if (selectedTag === null) return;
             
@@ -352,25 +345,25 @@
             updateStats();
         }
 
-        // Load a random video that hasn't been shown yet
+        // Lädt ein zufälliges Video, das noch nicht gezeigt wurde
         function loadRandomVideo() {
-            // Reset selection
+            // Auswahl zurücksetzen
             selectedTag = null;
             checkButton.disabled = true;
             nextButton.disabled = true;
             
-            // Reset buttons
+            // Buttons zurücksetzen
             document.querySelectorAll('.tag-button').forEach(button => {
                 button.classList.remove('selected', 'correct', 'incorrect');
                 button.disabled = false;
             });
             
-            // If all videos have been shown, reset the used indices
+            // Wenn alle Videos gezeigt wurden, zurücksetzen
             if (usedIndices.length === videoData.length) {
                 usedIndices = [];
             }
             
-            // Find a random index that hasn't been used yet
+            // Finde einen zufälligen Index, der noch nicht verwendet wurde
             let randomIndex;
             do {
                 randomIndex = Math.floor(Math.random() * videoData.length);
@@ -379,22 +372,39 @@
             usedIndices.push(randomIndex);
             currentVideoIndex = randomIndex;
             
-            // Load the video
+            // Lade das Video
             const video = videoData[currentVideoIndex];
-            videoContainer.innerHTML = `<iframe src="${video.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            videoContainer.innerHTML = '';
+            
+            if (video.type === "youtube") {
+                // YouTube-Embed
+                const iframe = document.createElement('iframe');
+                iframe.src = video.url + "?rel=0&enablejsapi=1";
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                iframe.setAttribute('allowfullscreen', '');
+                videoContainer.appendChild(iframe);
+            } else if (video.type === "local") {
+                // Lokale Videodatei
+                const videoElement = document.createElement('video');
+                videoElement.src = video.url;
+                videoElement.controls = true;
+                videoElement.style.objectFit = 'contain';
+                videoContainer.appendChild(videoElement);
+            }
             
             stats.shown++;
             updateStats();
         }
 
-        // Update statistics display
+        // Aktualisiert die Statistik-Anzeige
         function updateStats() {
             shownCountElement.textContent = stats.shown;
             correctCountElement.textContent = stats.correct;
             incorrectCountElement.textContent = stats.incorrect;
         }
 
-        // Start the application
+        // Startet die Anwendung
         init();
     </script>
 </body>
