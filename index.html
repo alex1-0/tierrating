@@ -109,7 +109,6 @@
         }
 
         .tag-button:disabled {
-            background-color: #333 !important;
             cursor: not-allowed;
             transform: none !important;
             box-shadow: none !important;
@@ -117,7 +116,6 @@
         }
         
         .tag-button:disabled:hover {
-            background-color: #333 !important;
             transform: none !important;
         }
         
@@ -247,14 +245,12 @@
             { url: "https://www.youtube.com/embed/DmED10d9qVo", type: "youtube", tag: "LT3" },
             { url: "https://www.youtube.com/embed/jJBN849ywZw", type: "youtube", tag: "LT3" },
             { url: "https://www.youtube.com/embed/W6gQNt0M2go", type: "youtube", tag: "HT5" },
-            { url: "https://medal.tv/games/minecraft/clips/kfJIyZDps76oQpk4B/d1337tVJXQ3E?invite=cr-MSxIY3MsMTg0MjE4OTMs", type: "medal", tag: "LT4" },
-            { url: "https://medal.tv/games/minecraft/clips/kcSAgmjFZ5VTrb1yY/d1337pHj1YqT?invite=cr-MSxwQ3MsMTg0MjE4OTMs", type: "medal", tag: "LT4" },
+            { url: "kfJIyZDps76oQpk4B", type: "medal", tag: "LT4" }, // Nur die Clip-ID
+            { url: "kcSAgmjFZ5VTrb1yY", type: "medal", tag: "LT4" }, // Nur die Clip-ID
             { url: "1.mp4", type: "local", tag: "HT3" },
             { url: "2.mp4", type: "local", tag: "LT4" },
             { url: "3.mov", type: "local", tag: "LT3" },
             { url: "4.mov", type: "local", tag: "LT3" },
-            // Weitere Videos hinzufügen im Format:
-            // { url: "URL", type: "youtube|local|medal", tag: "TAG" },
         ];
 
         // Alle möglichen Tags
@@ -329,13 +325,15 @@
             
             // Markiere alle Buttons entsprechend
             allButtons.forEach(button => {
-                button.disabled = true;
+                const buttonTag = button.dataset.tag;
                 
-                if (button.dataset.tag === correctTag) {
+                if (buttonTag === correctTag) {
                     button.classList.add('correct');
-                } else if (button.dataset.tag === selectedTag && selectedTag !== correctTag) {
+                } else if (buttonTag === selectedTag && selectedTag !== correctTag) {
                     button.classList.add('incorrect');
                 }
+                
+                button.disabled = true;
             });
             
             // Statistik aktualisieren
@@ -399,9 +397,10 @@
             } else if (video.type === "medal") {
                 // Medal.tv Embed
                 const iframe = document.createElement('iframe');
-                iframe.src = `https://medal.tv/embed/${video.url.split('/clips/')[1].split('?')[0]}?autoplay=1&loop=0&muted=0`;
+                iframe.src = `https://medal.tv/embed/${video.url}?autoplay=1&loop=0&muted=0`;
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('referrerpolicy', 'no-referrer');
                 videoContainer.appendChild(iframe);
             }
             
