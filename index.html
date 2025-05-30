@@ -397,7 +397,7 @@
             } else if (video.type === "medal") {
                 // Medal.tv Embed
                 const iframe = document.createElement('iframe');
-                iframe.src = video.url;
+                iframe.src = `${video.url}?autoplay=0&steamappid=252950&cta=0`;
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allowfullscreen', '');
                 iframe.setAttribute('referrerpolicy', 'no-referrer');
