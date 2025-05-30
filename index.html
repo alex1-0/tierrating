@@ -400,6 +400,7 @@
                 iframe.src = `${video.url}?autoplay=0&steamappid=252950&cta=0`;
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute("allow", "autoplay");
                 iframe.setAttribute('referrerpolicy', 'no-referrer');
                 videoContainer.appendChild(iframe);
             }
