@@ -260,6 +260,7 @@
             { url: "lt4.mp4", type: "local", tag: "LT4" },
             { url: "lt5.mp4", type: "local", tag: "LT5" },
             { url: "lt3 axe.mp4", type: "local", tag: "LT3" },
+            { url: "https://streamable.com/i5xtzh", type: "general", tag: "LT4" },
         ];
 
         // Alle möglichen Tags
@@ -404,14 +405,12 @@
                 videoElement.controls = true;
                 videoElement.style.objectFit = 'contain';
                 videoContainer.appendChild(videoElement);
-            } else if (video.type === "medal") {
+            } else if (video.type === "general") {
                 // Medal.tv Embed
                 const iframe = document.createElement('iframe');
-                iframe.src = `${video.url}?autoplay=0&steamappid=252950&cta=0`;
+                iframe.src = video.url;
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allowfullscreen', '');
-                iframe.setAttribute("allow", "autoplay");
-                iframe.setAttribute('referrerpolicy', 'no-referrer');
                 videoContainer.appendChild(iframe);
             }
             
