@@ -241,15 +241,15 @@
     <script>
         // Video-Daten mit verschiedenen Quellen
         const videoData = [
-            { url: "https://www.youtube.com/watch?v=ZG_1sFR67jI", type: "youtube", tag: "HT5" },
-            { url: "https://youtu.be/DmED10d9qVo", type: "youtube", tag: "LT3" },
-            { url: "https://www.youtube.com/watch?v=jJBN849ywZw", type: "youtube", tag: "LT3" },
-            { url: "https://youtu.be/W6gQNt0M2go", type: "youtube", tag: "HT5" },
-            { url: "https://youtu.be/HJpVpCjcSiQ?feature=shared", type: "youtube", tag: "LT4" },
-            { url: "https://www.youtube.com/watch?v=fHH_ETWc24E", type: "youtube", tag: "LT3" },
-            { url: "https://www.youtube.com/watch?v=GrJIVMNyg4Y", type: "youtube", tag: "LT3" },
-            { url: "https://youtu.be/-oKPU_GCjyA", type: "youtube", tag: "HT3" },
-            { url: "https://youtu.be/0kLMnQzbIZM", type: "youtube", tag: "HT3" },
+            { url: "ZG_1sFR67jI", type: "youtube", tag: "HT5" },
+            { url: "DmED10d9qVo", type: "youtube", tag: "LT3" },
+            { url: "jJBN849ywZw", type: "youtube", tag: "LT3" },
+            { url: "W6gQNt0M2go", type: "youtube", tag: "HT5" },
+            { url: "HJpVpCjcSiQ?feature=shared", type: "youtube", tag: "LT4" },
+            { url: "fHH_ETWc24E", type: "youtube", tag: "LT3" },
+            { url: "GrJIVMNyg4Y", type: "youtube", tag: "LT3" },
+            { url: "-oKPU_GCjyA", type: "youtube", tag: "HT3" },
+            { url: "0kLMnQzbIZM", type: "youtube", tag: "HT3" },
             { url: "ht4 2.mp4", type: "local", tag: "HT4" },
             { url: "ht4 9.mp4", type: "local", tag: "HT4" },
             { url: "ht4_(1).mp4", type: "local", tag: "HT4" },
@@ -392,6 +392,7 @@
                 // YouTube-Embed
                 const iframe = document.createElement('iframe');
                 iframe.src = video.url + "?rel=0&enablejsapi=1";
+                iframe.src = `https://www.youtube.com/embed/${video.url}`
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
                 iframe.setAttribute('allowfullscreen', '');
