@@ -14,6 +14,7 @@
             --error: #cf6679;
             --on-background: #e0e0e0;
             --on-surface: #ffffff;
+            --partial: #FFA500;
         }
         
         body {
@@ -108,6 +109,11 @@
             color: white;
         }
 
+        .tag-button.partial {
+            background-color: var(--partial);
+            color: white;
+        }
+
         .tag-button:disabled {
             cursor: not-allowed;
             transform: none !important;
@@ -192,6 +198,10 @@
         .shown-stat {
             color: var(--primary);
         }
+
+        .partial-stat {
+            color: var(--partial);
+        }
         
         @media (max-width: 768px) {
             .buttons-grid {
@@ -217,6 +227,10 @@
             <div class="stat-box correct-stat">
                 <div class="stat-label">Richtig</div>
                 <div class="stat-value" id="correct-count">0</div>
+            </div>
+            <div class="stat-box partial-stat">
+                <div class="stat-label">Teilweise</div>
+                <div class="stat-value" id="partial-count">0</div>
             </div>
             <div class="stat-box incorrect-stat">
                 <div class="stat-label">Falsch</div>
@@ -277,6 +291,7 @@
         let stats = {
             shown: 0,
             correct: 0,
+            partial: 0,
             incorrect: 0
         };
 
@@ -286,6 +301,7 @@
         const nextButton = document.getElementById('next-button');
         const shownCountElement = document.getElementById('shown-count');
         const correctCountElement = document.getElementById('correct-count');
+        const partialCountElement = document.getElementById('partial-count');
         const incorrectCountElement = document.getElementById('incorrect-count');
 
         // Initialisiert die App
@@ -328,12 +344,38 @@
             checkButton.disabled = false;
         }
 
+        // Berechnet die Punktzahl basierend auf der Auswahl
+        function calculatePoints(selectedTag, correctTag) {
+            if (selectedTag === correctTag) {
+                return 1; // Vollständig richtig
+            }
+            
+            // Extrahiere die Tierart (H/L) und die Stufe (1-5)
+            const selectedType = selectedTag[0];
+            const selectedTier = parseInt(selectedTag.substring(2));
+            const correctType = correctTag[0];
+            const correctTier = parseInt(correctTag.substring(2));
+            
+            // Wenn die Tierart gleich ist und die Stufe nur um 1 abweicht
+            if (selectedType === correctType && Math.abs(selectedTier - correctTier) === 1) {
+                return 0.5; // Teilweise richtig
+            }
+            
+            // Wenn die Tierart unterschiedlich ist, aber die Stufe gleich oder um 1 abweicht
+            if (selectedType !== correctType && Math.abs(selectedTier - correctTier) <= 1) {
+                return 0.5; // Teilweise richtig
+            }
+            
+            return 0; // Falsch
+        }
+
         // Überprüft die ausgewählte Antwort
         function checkAnswer() {
             if (selectedTag === null) return;
             
             const correctTag = videoData[currentVideoIndex].tag;
             const allButtons = document.querySelectorAll('.tag-button');
+            const points = calculatePoints(selectedTag, correctTag);
             
             // Markiere alle Buttons entsprechend
             allButtons.forEach(button => {
@@ -341,16 +383,24 @@
                 
                 if (buttonTag === correctTag) {
                     button.classList.add('correct');
-                } else if (buttonTag === selectedTag && selectedTag !== correctTag) {
-                    button.classList.add('incorrect');
+                } else if (buttonTag === selectedTag) {
+                    if (points === 1) {
+                        button.classList.add('correct');
+                    } else if (points === 0.5) {
+                        button.classList.add('partial');
+                    } else {
+                        button.classList.add('incorrect');
+                    }
                 }
                 
                 button.disabled = true;
             });
             
             // Statistik aktualisieren
-            if (selectedTag === correctTag) {
+            if (points === 1) {
                 stats.correct++;
+            } else if (points === 0.5) {
+                stats.partial++;
             } else {
                 stats.incorrect++;
             }
@@ -369,7 +419,7 @@
             
             // Buttons zurücksetzen
             document.querySelectorAll('.tag-button').forEach(button => {
-                button.classList.remove('selected', 'correct', 'incorrect');
+                button.classList.remove('selected', 'correct', 'incorrect', 'partial');
                 button.disabled = false;
             });
             
@@ -394,8 +444,7 @@
             if (video.type === "youtube") {
                 // YouTube-Embed
                 const iframe = document.createElement('iframe');
-                iframe.src = video.url + "?rel=0&enablejsapi=1";
-                iframe.src = `https://www.youtube.com/embed/${video.url}`
+                iframe.src = `https://www.youtube.com/embed/${video.url}`;
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
                 iframe.setAttribute('allowfullscreen', '');
@@ -424,6 +473,7 @@
         function updateStats() {
             shownCountElement.textContent = stats.shown;
             correctCountElement.textContent = stats.correct;
+            partialCountElement.textContent = stats.partial;
             incorrectCountElement.textContent = stats.incorrect;
         }
 
