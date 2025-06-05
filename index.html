@@ -229,7 +229,7 @@
                 <div class="stat-value" id="correct-count">0</div>
             </div>
             <div class="stat-box partial-stat">
-                <div class="stat-label">Teilweise</div>
+                <div class="stat-label">Fast</div>
                 <div class="stat-value" id="partial-count">0</div>
             </div>
             <div class="stat-box incorrect-stat">
@@ -344,25 +344,23 @@
             checkButton.disabled = false;
         }
 
+        // Definierte Reihenfolge der Tiers
+        const tierOrder = ['HT1', 'LT1', 'HT2', 'LT2', 'HT3', 'LT3', 'HT4', 'LT4', 'HT5', 'LT5'];
+
+        // [Rest der Initialisierung bleibt gleich]
+
         // Berechnet die Punktzahl basierend auf der Auswahl
         function calculatePoints(selectedTag, correctTag) {
             if (selectedTag === correctTag) {
                 return 1; // Vollständig richtig
             }
             
-            // Extrahiere die Tierart (H/L) und die Stufe (1-5)
-            const selectedType = selectedTag[0];
-            const selectedTier = parseInt(selectedTag.substring(2));
-            const correctType = correctTag[0];
-            const correctTier = parseInt(correctTag.substring(2));
+            // Finde die Positionen in der Reihenfolge
+            const correctIndex = tierOrder.indexOf(correctTag);
+            const selectedIndex = tierOrder.indexOf(selectedTag);
             
-            // Wenn die Tierart gleich ist und die Stufe nur um 1 abweicht
-            if (selectedType === correctType && Math.abs(selectedTier - correctTier) === 1) {
-                return 0.5; // Teilweise richtig
-            }
-            
-            // Wenn die Tierart unterschiedlich ist, aber die Stufe gleich oder um 1 abweicht
-            if (selectedType !== correctType && Math.abs(selectedTier - correctTier) <= 1) {
+            // Prüfe ob direkt benachbart
+            if (Math.abs(selectedIndex - correctIndex) === 1) {
                 return 0.5; // Teilweise richtig
             }
             
