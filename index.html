@@ -202,6 +202,13 @@
         .partial-stat {
             color: var(--partial);
         }
+
+        .points-stat {
+            color: #bb86fc;
+            font-size: 1.5em;
+            margin-top: 10px;
+            text-align: center;
+        }
         
         @media (max-width: 768px) {
             .buttons-grid {
@@ -220,6 +227,10 @@
         <h1>MCTiers erraten</h1>
         
         <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">Punktestand</div>
+                <div class="stat-value points-stat" id="points-display">0</div>
+            </div>
             <div class="stat-box shown-stat">
                 <div class="stat-label">Gezeigt</div>
                 <div class="stat-value" id="shown-count">0</div>
@@ -276,14 +287,7 @@
             { url: "lt3 axe.mp4", type: "local", tag: "LT3" },
             { url: "https://streamable.com/e/i5xtzh", type: "general", tag: "LT4" },
             { url: "gLXYdayX338", type: "youtube", tag: "HT1" },
-            { url: "ARBpz7dLevU", type: "youtube", tag: "HT3" },
-            { url: "umknbrlEadI", type: "youtube", tag: "LT3" },
-            { url: "hVYJlTnLSrg", type: "youtube", tag: "HT4" },
-            { url: "9uw_hH1Smys", type: "youtube", tag: "LT3" },
-            { url: "jaLFudKWrl0", type: "youtube", tag: "LT3" },
-            { url: "ht5 a.mp4", type: "local", tag: "HT5" },
-            { url: "lt4 b.mp4", type: "local", tag: "LT4" },
-            { url: "ht4 sword.mp4", type: "local", tag: "HT4" },
+            
         ];
 
         // Alle möglichen Tags
@@ -355,6 +359,9 @@
         const tierOrder = ['HT1', 'LT1', 'HT2', 'LT2', 'HT3', 'LT3', 'HT4', 'LT4', 'HT5', 'LT5'];
 
         // [Rest der Initialisierung bleibt gleich]
+        function calculateTotalPoints() {
+            return stats.correct + (stats.partial * 0.5);
+        }
 
         // Berechnet die Punktzahl basierend auf der Auswahl
         function calculatePoints(selectedTag, correctTag) {
@@ -480,6 +487,10 @@
             correctCountElement.textContent = stats.correct;
             partialCountElement.textContent = stats.partial;
             incorrectCountElement.textContent = stats.incorrect;
+            
+            // Punkte anzeigen
+            document.getElementById('points-display').textContent = 
+                calculateTotalPoints().toFixed(1);
         }
 
         // Startet die Anwendung
