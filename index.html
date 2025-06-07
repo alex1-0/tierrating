@@ -209,6 +209,44 @@
             margin-top: 10px;
             text-align: center;
         }
+
+                .restart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            display: none;
+        }
+        
+        .restart-message {
+            color: var(--primary);
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .restart-button {
+            padding: 15px 30px;
+            background-color: var(--primary);
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .restart-button:hover {
+            background-color: var(--secondary);
+            transform: scale(1.05);
+        }
         
         @media (max-width: 768px) {
             .buttons-grid {
@@ -262,6 +300,13 @@
             <button id="next-button" class="control-button">Nächstes Video</button>
         </div>
     </div>
+    
+    <!-- Neuer Overlay für Neustart -->
+    <div class="restart-overlay" id="restart-overlay">
+        <div class="restart-message">Glückwunsch! Du hast alle Videos durchgespielt!</div>
+        <div class="restart-message">Punktestand: <span id="final-score">0</span></div>
+        <button class="restart-button" id="restart-button">Neu starten</button>
+    </div>
 
     <script>
         // Video-Daten mit verschiedenen Quellen
@@ -269,25 +314,6 @@
             { url: "ZG_1sFR67jI", type: "youtube", tag: "HT5" },
             { url: "DmED10d9qVo", type: "youtube", tag: "LT3" },
             { url: "jJBN849ywZw", type: "youtube", tag: "LT3" },
-            { url: "W6gQNt0M2go", type: "youtube", tag: "HT5" },
-            { url: "HJpVpCjcSiQ?feature=shared", type: "youtube", tag: "LT4" },
-            { url: "fHH_ETWc24E", type: "youtube", tag: "LT3" },
-            { url: "GrJIVMNyg4Y", type: "youtube", tag: "LT3" },
-            { url: "-oKPU_GCjyA", type: "youtube", tag: "HT3" },
-            { url: "0kLMnQzbIZM", type: "youtube", tag: "LT3" },
-            { url: "ht4 2.mp4", type: "local", tag: "HT4" },
-            { url: "ht4 9.mp4", type: "local", tag: "HT4" },
-            { url: "ht4_(1).mp4", type: "local", tag: "HT4" },
-            { url: "lt3 5.mov", type: "local", tag: "LT3" },
-            { url: "lt3 6.mov", type: "local", tag: "LT3" },
-            { url: "lt4 2.mp4", type: "local", tag: "LT4" },
-            { url: "lt4 4.mp4", type: "local", tag: "LT4" },
-            { url: "lt4.mp4", type: "local", tag: "LT4" },
-            { url: "lt5.mp4", type: "local", tag: "LT5" },
-            { url: "lt3 axe.mp4", type: "local", tag: "LT3" },
-            { url: "https://streamable.com/e/i5xtzh", type: "general", tag: "LT4" },
-            { url: "gLXYdayX338", type: "youtube", tag: "HT1" },
-            
         ];
 
         // Alle möglichen Tags
@@ -437,7 +463,8 @@
             
             // Wenn alle Videos gezeigt wurden, zurücksetzen
             if (usedIndices.length >= videoData.length) {
-                usedIndices = [];
+                showRestartScreen();
+                return;
             }
             
             // Finde einen zufälligen Index, der noch nicht verwendet wurde
@@ -479,6 +506,33 @@
             
             stats.shown++;
             updateStats();
+        }
+
+        function restartGame() {
+            // Zurücksetzen der Statistiken
+            stats = {
+                shown: 0,
+                correct: 0,
+                partial: 0,
+                incorrect: 0
+            };
+            
+            // Zurücksetzen der verwendeten Indizes
+            usedIndices = [];
+            
+            // Overlay ausblenden
+            document.getElementById('restart-overlay').style.display = 'none';
+            
+            // Neues Video laden
+            loadRandomVideo();
+            updateStats();
+        }
+
+        document.getElementById('restart-button').addEventListener('click', restartGame);
+
+        function showRestartScreen() {
+            document.getElementById('final-score').textContent = calculateTotalPoints().toFixed(1);
+            document.getElementById('restart-overlay').style.display = 'flex';
         }
 
         // Aktualisiert die Statistik-Anzeige
